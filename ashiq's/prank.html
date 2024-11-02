@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="prank.css">
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <title>End of Journey</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .message {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: textGlow 2s infinite alternate;
+        }
+
+        .subtext {
+            font-size: 1.2rem;
+            opacity: 0;
+            margin-top: 2rem;
+            animation: slideUp 1s forwards;
+            animation-delay: 1s;
+        }
+
+        /* Background Animation */
+        .background-shift {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #FF6B6B);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: 1;
+        }
+
+        /* Floating Bubbles */
+        .bubble {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 8s infinite;
+            z-index: 1;
+        }
+
+        /* Matrix-style falling characters */
+        .matrix-rain {
+            position: fixed;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: monospace;
+            font-size: 20px;
+            text-shadow: 0 0 5px #fff;
+            animation: matrixFall linear infinite;
+        }
+
+        /* Glitch effect container */
+        .glitch-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-clone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            animation: glitch 2s infinite;
+        }
+
+        /* Keyframe Animations */
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #4ECDC4; }
+            100% { text-shadow: 0 0 20px #fff, 0 0 30px #FF6B6B, 0 0 40px #FF6B6B; }
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-100px) translateX(50px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+
+        @keyframes matrixFall {
+            0% { transform: translateY(-100%); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glitch {
+            0% { transform: none; opacity: 1; }
+            7% { transform: skew(-0.5deg, -0.9deg); opacity: 0.75; }
+            10% { transform: none; opacity: 1; }
+            27% { transform: none; opacity: 1; }
+            30% { transform: skew(0.8deg, -0.1deg); opacity: 0.75; }
+            35% { transform: none; opacity: 1; }
+            52% { transform: none; opacity: 1; }
+            55% { transform: skew(-1deg, 0.2deg); opacity: 0.75; }
+            50% { transform: none; opacity: 1; }
+            72% { transform: none; opacity: 1; }
+            75% { transform: skew(0.4deg, 1deg); opacity: 0.75; }
+            80% { transform: none; opacity: 1; }
+            100% { transform: none; opacity: 1; }
+        }
+
+        /* Spinning 3D effect */
+        .spinner {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            animation: spin 10s linear infinite;
+            transform-style: preserve-3d;
+            z-index: 1;
+        }
+
+        .spinner div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        @keyframes spin {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shift"></div>
+    <div class="container">
+        <div class="glitch-container">
+            <div class="message" id="mainMessage"></div>
+            <div class="message glitch-clone" id="mainMessageClone"></div>
+        </div>
+        <div class="subtext" id="subMessage"></div>
+    </div>
+
+    <script>
+        const mainMessages = [
+            "Plot twist: There was no AI all along! 🎭",
+            "Congratulations! You've been part of a social experiment 🔬",
+            "Breaking News: This was all smoke and mirrors! 🎪",
+            "Thank you for participating in this totally not-AI experience 🤖",
+            "Surprise! It was just clever programming all along! ✨",
+            "You've reached the end... or have you? 🤔",
+            "All those loading screens... just for this moment 🎉",
+            "Your answers are safely stored in /dev/null 📝",
+            "Loading complete... with a twist! 🌀",
+            "Error 418: I'm actually a teapot ☕"
+        ];
+
+        const subMessages = [
+            "Sometimes the journey matters more than the destination",
+            "Did you enjoy answering all those questions?",
+            "Your patience in answering everything was impressive",
+            "Thanks for sticking around till the end",
+            "Hope you had fun with all those loading screens",
+            "Those were some interesting answers you gave",
+            "Wonder what you learned about yourself?",
+            "Maybe the real AI was the friends we made along the way",
+            "Refresh for more existential crisis",
+            "At least you're persistent!"
+        ];
+
+        function getRandomMessage(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Set random messages
+        const mainMessage = getRandomMessage(mainMessages);
+        document.getElementById('mainMessage').textContent = mainMessage;
+        document.getElementById('mainMessageClone').textContent = mainMessage;
+        document.getElementById('subMessage').textContent = getRandomMessage(subMessages);
+
+        // Create floating bubbles
+        function createBubbles() {
+            for(let i = 0; i < 20; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.width = Math.random() * 50 + 20 + 'px';
+                bubble.style.height = bubble.style.width;
+                bubble.style.left = Math.random() * 100 + 'vw';
+                bubble.style.top = Math.random() * 100 + 'vh';
+                bubble.style.animationDuration = Math.random() * 4 + 6 + 's';
+                bubble.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(bubble);
+            }
+        }
+
+        // Create matrix rain effect
+        function createMatrixRain() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+            for(let i = 0; i < 20; i++) {
+                const rain = document.createElement('div');
+                rain.className = 'matrix-rain';
+                rain.style.left = Math.random() * 100 + 'vw';
+                rain.style.animationDuration = Math.random() * 2 + 3 + 's';
+                rain.textContent = chars[Math.floor(Math.random() * chars.length)];
+                document.body.appendChild(rain);
+            }
+        }
+
+        // Create 3D spinner
+        function createSpinner() {
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            for(let i = 0; i < 3; i++) {
+                const ring = document.createElement('div');
+                ring.style.transform = `rotateX(${i * 60}deg)`;
+                spinner.appendChild(ring);
+            }
+            spinner.style.left = Math.random() * 80 + 10 + 'vw';
+            spinner.style.top = Math.random() * 80 + 10 + 'vh';
+            document.body.appendChild(spinner);
+        }
+
+        createBubbles();
+        createMatrixRain();
+        
+        // Create multiple spinners
+        for(let i = 0; i < 3; i++) {
+            createSpinner();
+        }
+
+        // Periodically refresh matrix rain
+        setInterval(() => {
+            const oldRain = document.querySelectorAll('.matrix-rain');
+            oldRain.forEach(rain => rain.remove());
+            createMatrixRain();
+        }, 5000);
+    </script>
+</body>
+</html>
