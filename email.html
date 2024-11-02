@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Your Email</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enter Your Email</h1>
+        <form id="emailForm">
+            <input type="email" id="userEmail" placeholder="Your Email" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <div id="loadingScreen" class="loading-screen hidden">
+        <img src="loading.jpg" alt="Loading..." class="loading-image">
+        <p>Organizing according to your data...</p>
+    </div>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            // Show loading screen
+            document.getElementById('loadingScreen').style.display = 'flex';
+
+            // Simulate processing
+            setTimeout(() => {
+                alert('Thank you for providing your information!');
+                // Redirect or perform actions as needed
+            }, 2000); // Adjust time as needed
+        });
+    </script>
+</body>
+</html>
