@@ -35,7 +35,7 @@ For Software:
 NIL
 
 # Run
-NIL
+Our project begins with the index.html file!
 
 ### Project Documentation
 For Software:
