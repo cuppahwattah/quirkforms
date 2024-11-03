@@ -3,25 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colorful Loading Screen</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="loading_screen2.css">
+    <title>Loader Example</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(270deg,#545455, #7d7d7c, #252525);
+            background-size: 400% 400%;
+            font-family: Arial, sans-serif;
+            animation: gradientAnimation 5s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 0%; /* Move to the right */
+            }
+        }
+        
+
+        .loader {
+            display: block;
+            position: relative;
+            height: 32px;
+            width: 100px;
+            box-sizing: border-box;
+            overflow: hidden;
+            margin: 50px auto; /* Center the loader */
+        }
+
+        .loader:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 4px;
+            width: 24px;
+            height: 24px;
+            animation: ballbns 2s ease-in infinite;
+        }
+        
+        @keyframes ballbns {
+            0% {  
+                left: 0; 
+                transform: translateX(-100%) rotate(0deg);
+                border-radius: 0; 
+                background: #FFF;
+            }
+            100% {  
+                left: 100%; 
+                transform: translateX(0%) rotate(360deg); 
+                border-radius: 50%;
+                background: #FFF; 
+            }
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+        }
+
+        
+
+    </style>
 </head>
 <body>
-    <div id="preloader">
-        <div id="loader"></div>
-    </div>
-    <div id="content" style="display: none;">
-        <h1>Welcome to the App!</h1>
-        <p>Your content goes here.</p>
-    </div>
-    <script src="script.js"></script>
-   
-    <a href="game.html"></a>
+
+    <span class="loader"></span>
+    <script>
+        setTimeout(() => {
+            window.location.href = "game.html";
+        },5000)
+    </script>
 </body>
-<script>
-    setTimeout(() => {
-        window.location.href = "game.html"; 
-    }, 2000);
-</script>
 </html>
