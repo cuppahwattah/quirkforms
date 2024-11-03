@@ -4,25 +4,25 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background: linear-gradient(to bottom, #1b4793, #378ec4); /* Add your gradient here */
+    background: linear-gradient(to bottom, #1b4793, #378ec4); 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 10px;
 }
 
 .loading-screen {
     text-align: center;
-    background-color: rgba(227, 249, 255, 0.8); /* Optional: semi-transparent white background for readability */
+    background-color: rgba(227, 249, 255, 0.8); 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 10px;
     color: #2f2f2e;
-    border-radius: 15px;/* Optional: round the corners */
+    border-radius: 15px;
     position: relative; 
 }
 
 .message-box {
-    position: absolute; /* Position relative to loading-screen */
-    bottom: 30px; /* Distance from the bottom */
-    left: 500px; /* Distance from the left */
+    position: absolute; 
+    bottom: 30px; 
+    left: 500px; 
     font-size: 18px;
     color: #fff;
     background-color: rgba(0, 0, 0, 0.7);
@@ -38,7 +38,7 @@ body {
     border: 2px solid #645c5c;
     overflow: hidden;
     margin: 20px auto;
-    background-color: #fff; /* Background color for the game area */
+    background-color: #fff; 
 }
 
 .basket {
