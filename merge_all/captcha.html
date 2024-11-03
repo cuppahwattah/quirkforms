@@ -279,7 +279,7 @@
                     text += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
                 this.solution = text;
-                return <div style="font-family: monospace; letter-spacing: 3px;">${text}</div>;
+                return `<div style="font-family: monospace; letter-spacing: 3px;">${text}</div>`;
             }
 
             generateCaptcha() {
@@ -310,6 +310,9 @@
                 if(input === this.solution.toLowerCase()) {
                     this.showMessage('Success! You\'ve verified you\'re human.', 'success');
                     setTimeout(() => this.generateCaptcha(), 2000);
+                    setTimeout(() => {
+                        window.location.href = 'dino.html'; 
+                    }, 2000);
                 } else {
                     container.classList.add('shake');
                     this.showMessage('Incorrect answer. Please try again.', 'error');
@@ -320,7 +323,7 @@
             showMessage(text, type) {
                 const message = document.querySelector('.message');
                 message.textContent = text;
-                message.className = 'message ${type} fade';
+                message.className = `message ${type} fade`;
                 message.style.display = 'block';
             }
 
