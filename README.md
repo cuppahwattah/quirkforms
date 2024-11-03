@@ -13,7 +13,7 @@
 - Member 3: Ziyana Ahammad S A P - Cochin University of Science and Technology
 
 ### Project Description
-Welcome to a playful adventure that turns the usual loading screen boredom on its head! As you answer some quirky personal questions, you’ll find yourself on a wild ride through interactive loading screens designed to entertain. Each page is packed with humor and surprises, all leading up to the ultimate reveal that it’s just a prank!
+Welcome to a playful adventure that turns the usual loading screen boredom on its head! As you answer some quirky personal questions to a personal assistive AI bot, you’ll find yourself on a wild ride through interactive loading screens designed to entertain. Each page is packed with humor and surprises, all leading up to the ultimate reveal that it’s just a prank!
 
 We believe loading shouldn’t be dull—it can be a blast! So, get ready to share a few laughs while you navigate through this lighthearted experience. Who knew waiting could be so much fun? Join in and enjoy the journey!
 
