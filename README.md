@@ -36,7 +36,7 @@ For Software:
 NIL
 
 # Run
-Our project begins with the index.html file!
+Our project begins with the index.html file!📂
 
 ### Project Documentation
 For Software:
@@ -55,16 +55,15 @@ this is an interactive catch-the-ball you can play while your data is processed.
 the final reveal!
 
 #demo
-
-
+https://github.com/user-attachments/assets/17f6739f-7723-489f-9a15-54e7dc2ff736
 
 # workflow
-1. Planning
-2. Design
-3. Development
-4. Testing
-5. Launch
-6. Maintenance
+1.Planning 📝
+2.Design 🎨
+3.Development 💻
+4.Testing ✅
+5.Launch 🚀
+6.Maintenance 🔧
 
 ## Team Contributions
 - Ashiq Ali N K: idea creator, made dynamic background screens and question page
