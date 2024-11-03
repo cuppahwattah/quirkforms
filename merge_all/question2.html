@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Questions!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Georgia&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .bg-1, .bg-2, .bg-3 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity 2s ease;
+        }
+
+        .bg-1 {
+            background: linear-gradient(180deg, #f9dea1 60%, #9bdaff 100%);
+        }
+
+        .bg-2 {
+            background: linear-gradient(300deg, #f9c3f5 60%, #9bdaff 100%);
+            animation: fade1 12s infinite;
+        }
+
+        .bg-3 {
+            background: linear-gradient(10deg, #bab2fc 60%, #9bdaff 100%);
+            animation: fade2 12s infinite;
+        }
+
+        @keyframes fade1 {
+            0%, 33% { opacity: 1; }
+            34%, 66% { opacity: 0; }
+            67%, 100% { opacity: 0; }
+        }
+
+        @keyframes fade2 {
+            0%, 33% { opacity: 0; }
+            34%, 66% { opacity: 0; }
+            67%, 100% { opacity: 1; }
+        }
+
+        .question-container {
+            max-width: 600px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #2b1010;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #4ECDC4, #556270);
+            border-radius: 2px;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .response-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            min-height: 20px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .response-text.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .question:nth-child(1) { animation-delay: 0.2s; }
+        .question:nth-child(2) { animation-delay: 0.4s; }
+        .question:nth-child(3) { animation-delay: 0.6s; }
+
+        label {
+            display: block;
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+            outline: none;
+        }
+
+        .wonder-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 2rem;
+            background: linear-gradient(45deg, #4ECDC4, #556270);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 0.8s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .wonder-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+        }
+
+        .wonder-button:active {
+            transform: translateY(0);
+        }
+
+        .final-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(135deg, #fff 0%, #f5f5f5 100%);
+        }
+
+        .final-message.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="bg-1"></div>
+        <div class="bg-2"></div>
+        <div class="bg-3"></div>
+    </div>
+
+    <div class="question-container">
+        <h1>Fun Questions! ✨</h1>
+        <form id="prank-form" onsubmit="return handleSubmit(event)">
+            <div class="question">
+                <label for="question1">What's your dream car? 🚗</label>
+                <input type="text" id="question1" placeholder="Tell us about your dream ride..." required>
+                <div class="response-text" id="response1"></div>
+            </div>
+            <div class="question">
+                <label for="question2">What's your favorite color? 🎨</label>
+                <input type="text" id="question2" placeholder="Share your preferred hue..." required>
+                <div class="response-text" id="response2"></div>
+            </div>
+            <div class="question">
+                <label for="question3">Where would you love to live? 🏠</label>
+                <input type="text" id="question3" placeholder="Dream destination..." required>
+                <div class="response-text" id="response3"></div>
+            </div>
+            <button type="submit" class="wonder-button">Submit ✨</button>
+        </form>
+    </div>
+
+    <div class="final-message" id="finalMessage">
+        <h2>🎉 Amazing Choices! 🎉</h2>
+        <p id="finalText"></p>
+    </div>
+
+    <script>
+        // Random response generators
+        const carResponses = [
+            "Wow! did u know that the car u choose is loved by millions? 🚀",
+            "That's a fancy choice! You must have excellent taste in vehicles! 🎯",
+            "Legend says that car brings good fortune to its owner! 🍀",
+            "Fun fact: That's also a superhero's favorite car! 💫",
+            "You could probably race the wind in that beauty! 🌪️"
+        ];
+
+        const colorResponses = [
+            "That color is said to attract positive energy! ✨",
+            "People who love that color are often creative geniuses! 🎨",
+            "That's the color of success and adventure! 🌟",
+            "Ancient wisdom says that color brings happiness! 😊",
+            "You must be a very inspiring person to choose that color! 🌈"
+        ];
+
+        const locationResponses = [
+            "That's such a lovely place✨ ",
+            "That place has the most beautiful sunsets! 🌅",
+            "Legend says unicorns were first discovered there! 🦄",
+            "The happiness level there is off the charts! 😊",
+            "That's where dreams come true! ✨"
+        ];
+
+        const finalResponses = [
+            "Your choices reveal you're definitely a time traveler from the future! 🚀",
+            "According to ancient prophecies, you might be a superhero in disguise! 🦸‍♂️",
+            "Your answers suggest you're secretly a magical wizard! 🧙‍♂️",
+            "With these choices, you must be the main character in a fairy tale! 👑",
+            "You're definitely living in the most exciting timeline! ✨"
+        ];
+
+        function getRandomResponse(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Add response listeners to inputs
+        document.getElementById('question1').addEventListener('input', function(e) {
+            if (e.target.value.length > 2) {
+                const response = document.getElementById('response1');
+                response.textContent = getRandomResponse(carResponses);
+                response.classList.add('show');
+            }
+        });
+
+        document.getElementById('question2').addEventListener('input', function(e) {
+            if (e.target.value.length > 2) {
+                const response = document.getElementById('response2');
+                response.textContent = getRandomResponse(colorResponses);
+                response.classList.add('show');
+            }
+        });
+
+        document.getElementById('question3').addEventListener('input', function(e) {
+            if (e.target.value.length > 2) {
+                const response = document.getElementById('response3');
+                response.textContent = getRandomResponse(locationResponses);
+                response.classList.add('show');
+            }
+        });
+
+        // Create confetti
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = 'hsl(${Math.random() * 360}, 80%, 50%)';
+                confetti.style.animation = 'confetti-fall ${Math.random() * 3 + 2}s linear forwards';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const finalMessage = document.getElementById('finalMessage');
+            const finalText = document.getElementById('finalText');
+            finalText.textContent = getRandomResponse(finalResponses);
+            finalMessage.classList.add('show');
+            createConfetti();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                finalMessage.classList.remove('show');
+                // Add your redirect logic here if needed
+                 window.location.href = "color2.html";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

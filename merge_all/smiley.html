@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ffcdd2, #f8bbd0, #e1bee7, #d1c4e9);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            overflow: hidden;
+        }
+
+        #smiley-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #smiley {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid #555;
+            background: white;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .eye {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #555;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        #left-eye {
+            top: 35%;
+            left: 25%;
+        }
+
+        #right-eye {
+            top: 35%;
+            right: 25%;
+        }
+
+        #smile {
+            position: absolute;
+            width: 120px;
+            height: 40px;
+            border: 8px solid #555;
+            border-radius: 0 0 120px 120px;
+            border-top: 0;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        #color-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ffeb3b;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .reveal-circle {
+            position: absolute;
+            background: #ffeb3b;
+            border-radius: 50%;
+            transform: scale(0);
+            pointer-events: none;
+            transition: transform 0.5s ease-out;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 28px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            color: #555;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #coverage-tracker {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+
+        .popper {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff69b4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+            opacity: 0;
+            transform: scale(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="smiley-container">
+        <div id="smiley">
+            <div id="left-eye" class="eye"></div>
+            <div id="right-eye" class="eye"></div>
+            <div id="smile"></div>
+            <div id="color-layer"></div>
+            <canvas id="coverage-tracker"></canvas>
+        </div>
+    </div>
+    <div id="message">Yay! So happy! 🎉</div>
+
+    <script>
+        const smiley = document.getElementById('smiley');
+        const colorLayer = document.getElementById('color-layer');
+        const message = document.getElementById('message');
+        const canvas = document.getElementById('coverage-tracker');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = smiley.offsetWidth;
+        canvas.height = smiley.offsetHeight;
+        
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = (canvas.width / 2) - 2;
+        
+        let isColoring = false;
+        const revealSize = 40;
+
+        function createConfetti() {
+            const colors = ['#ff69b4', '#87ceeb', '#dda0dd', '#90ee90', '#ffb6c1'];
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '-10px';
+            document.body.appendChild(confetti);
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 3 + Math.random() * 2;
+            let posX = parseFloat(confetti.style.left);
+            let posY = -10;
+            let rotation = 0;
+
+            function animateConfetti() {
+                posY += velocity;
+                posX += Math.sin(angle) * 2;
+                rotation += 10;
+                
+                confetti.style.top = posY + 'px';
+                confetti.style.left = posX + 'px';
+                confetti.style.transform = `rotate(${rotation}deg)`;
+
+                if (posY < window.innerHeight) {
+                    requestAnimationFrame(animateConfetti);
+                } else {
+                    confetti.remove();
+                }
+            }
+
+            animateConfetti();
+        }
+
+
+        function isPointInCircle(x, y) {
+            const distance = Math.sqrt(
+                Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2)
+            );
+            return distance <= radius;
+        }
+
+        function drawRevealCircle(x, y) {
+            const circle = document.createElement('div');
+            circle.className = 'reveal-circle';
+            circle.style.width = revealSize + 'px';
+            circle.style.height = revealSize + 'px';
+            circle.style.left = (x - revealSize/2) + 'px';
+            circle.style.top = (y - revealSize/2) + 'px';
+            smiley.appendChild(circle);
+            
+            requestAnimationFrame(() => {
+                circle.style.transform = 'scale(1)';
+            });
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+            ctx.beginPath();
+            ctx.arc(x, y, revealSize/2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function celebrate() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createPopper(
+                        Math.random() * window.innerWidth,
+                        window.innerHeight - 100
+                    );
+                }, i * 200);
+            }
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => createConfetti(), i * 100);
+            }
+        }
+
+        function completeColoring() {
+            const circles = document.querySelectorAll('.reveal-circle');
+            circles.forEach(circle => circle.remove());
+            
+            colorLayer.style.opacity = '1';
+            colorLayer.style.transition = 'opacity 0.5s ease-out';
+            message.style.opacity = '1';
+            
+            celebrate();
+
+            smiley.removeEventListener('mousedown', startColoring);
+            smiley.removeEventListener('mousemove', handleColoring);
+            smiley.removeEventListener('mouseup', stopColoring);
+            smiley.removeEventListener('mouseleave', stopColoring);
+
+            setTimeout(() => {
+                window.location.href = "prank.html"; // Replace with your desired HTML file
+            }, 3000);
+        }
+
+        function checkCompletion() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            let coveredPixels = 0;
+            let totalPixels = 0;
+
+            for(let y = 0; y < canvas.height; y++) {
+                for(let x = 0; x < canvas.width; x++) {
+                    if(isPointInCircle(x, y)) {
+                        totalPixels++;
+                        const i = (y * canvas.width + x) * 4;
+                        if(data[i + 3] > 0) {
+                            coveredPixels++;
+                        }
+                    }
+                }
+            }
+
+            if(coveredPixels / totalPixels > 0.99) {
+                completeColoring();
+            }
+        }
+
+        function startColoring(e) {
+            isColoring = true;
+            handleColoring(e);
+        }
+
+        function stopColoring() {
+            isColoring = false;
+            checkCompletion();
+        }
+
+        function handleColoring(e) {
+            if (!isColoring) return;
+            
+            const rect = smiley.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (isPointInCircle(x, y)) {
+                drawRevealCircle(x, y);
+            }
+        }
+
+        smiley.addEventListener('mousedown', startColoring);
+        smiley.addEventListener('mousemove', handleColoring);
+        smiley.addEventListener('mouseup', stopColoring);
+        smiley.addEventListener('mouseleave', stopColoring);
+    </script>
+</body>
+</html>

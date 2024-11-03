@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic CAPTCHA Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 400px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .captcha-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .captcha-box {
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .captcha-type {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .type-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-button.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        .captcha-content {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            user-select: none;
+        }
+
+        .math-captcha {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-captcha {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #764ba2;
+            transition: transform 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: rotate(180deg);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .input-field:focus {
+            border-color: #764ba2;
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #667eea;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .fade {
+            animation: fade 0.5s;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Verify You're Human</h1>
+            <p>Complete the challenge below</p>
+        </div>
+        
+        <div class="captcha-type">
+            <button class="type-button active" data-type="math">Math</button>
+            <button class="type-button" data-type="color">Color</button>
+            <button class="type-button" data-type="text">Text</button>
+        </div>
+
+        <div class="captcha-container">
+            <div class="captcha-box">
+                <div class="captcha-content"></div>
+                <button class="refresh-btn">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <input type="text" class="input-field" placeholder="Enter your answer" autocomplete="off">
+            <button class="submit-btn">Verify</button>
+            <div class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        class Captcha {
+            constructor() {
+                this.currentType = 'math';
+                this.solution = '';
+                this.setupEventListeners();
+                this.generateCaptcha();
+            }
+
+            setupEventListeners() {
+                document.querySelector('.refresh-btn').addEventListener('click', () => this.generateCaptcha());
+                document.querySelector('.submit-btn').addEventListener('click', () => this.validateCaptcha());
+                document.querySelectorAll('.type-button').forEach(button => {
+                    button.addEventListener('click', () => this.changeCaptchaType(button));
+                });
+            }
+
+            changeCaptchaType(button) {
+                document.querySelectorAll('.type-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                this.currentType = button.dataset.type;
+                this.generateCaptcha();
+            }
+
+            generateMathCaptcha() {
+                const num1 = Math.floor(Math.random() * 20);
+                const num2 = Math.floor(Math.random() * 20);
+                const operators = ['+', '-', '×'];
+                const operator = operators[Math.floor(Math.random() * operators.length)];
+                
+                let answer;
+                switch(operator) {
+                    case '+': answer = num1 + num2; break;
+                    case '-': answer = num1 - num2; break;
+                    case '×': answer = num1 * num2; break;
+                }
+
+                this.solution = answer.toString();
+                return `<div class="math-captcha">
+                    <span>${num1}</span>
+                    <span>${operator}</span>
+                    <span>${num2}</span>
+                    <span>=</span>
+                    <span>?</span>
+                </div>`;
+            }
+
+            generateColorCaptcha() {
+                const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                this.solution = color;
+                return `<div class="color-captcha">
+                    What color is this?
+                    <div class="color-box" style="background-color: ${color}"></div>
+                </div>`;
+            }
+
+            generateTextCaptcha() {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+                let text = '';
+                for(let i = 0; i < 6; i++) {
+                    text += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                this.solution = text;
+                return <div style="font-family: monospace; letter-spacing: 3px;">${text}</div>;
+            }
+
+            generateCaptcha() {
+                const content = document.querySelector('.captcha-content');
+                content.classList.add('fade');
+                
+                switch(this.currentType) {
+                    case 'math':
+                        content.innerHTML = this.generateMathCaptcha();
+                        break;
+                    case 'color':
+                        content.innerHTML = this.generateColorCaptcha();
+                        break;
+                    case 'text':
+                        content.innerHTML = this.generateTextCaptcha();
+                        break;
+                }
+
+                document.querySelector('.input-field').value = '';
+                this.hideMessage();
+            }
+
+            validateCaptcha() {
+                const input = document.querySelector('.input-field').value.toLowerCase();
+                const container = document.querySelector('.captcha-container');
+                const message = document.querySelector('.message');
+
+                if(input === this.solution.toLowerCase()) {
+                    this.showMessage('Success! You\'ve verified you\'re human.', 'success');
+                    setTimeout(() => this.generateCaptcha(), 2000);
+                } else {
+                    container.classList.add('shake');
+                    this.showMessage('Incorrect answer. Please try again.', 'error');
+                    setTimeout(() => container.classList.remove('shake'), 500);
+                }
+            }
+
+            showMessage(text, type) {
+                const message = document.querySelector('.message');
+                message.textContent = text;
+                message.className = 'message ${type} fade';
+                message.style.display = 'block';
+            }
+
+            hideMessage() {
+                const message = document.querySelector('.message');
+                message.style.display = 'none';
+            }
+        }
+
+        // Initialize the captcha
+        new Captcha();
+    </script>
+</body>
+</html>

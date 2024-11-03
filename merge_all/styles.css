@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif; 
+}
+
+.wonder-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    color: white;
+    background: linear-gradient(135deg, #0905f5, #2575fc);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 1.3s, transform 0.5s;
+}
+
+.wonder-button:hover {
+    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    transform: scale(1.05);
+}
