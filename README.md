@@ -33,8 +33,11 @@ For Software:
 ### Implementation
 For Software:
 # Installation
-NIL
-
+software installation
+  1. clone the repository:
+    git clone https://github.com/cuppawattah/quirkforms.git
+    cd  qurirkforms
+  2. Open index.html in a browser launch the website  
 # Run
 Our project begins with the index.html file!📂
 
